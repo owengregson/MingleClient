@@ -16,10 +16,10 @@ var butterup = {
             }else{
                 toaster.className = 'toaster ' + location;
             }
-  
+
             // Create the toasting rack inside of the toaster
             document.body.appendChild(toaster);
-  
+
             // Create the toasting rack inside of the toaster
             if(document.getElementById('butterupRack') == null){
                 const rack = document.createElement('ol');
@@ -43,7 +43,7 @@ var butterup = {
             }
             const rack = document.getElementById('butterupRack');
         }
-  
+
         // Check if there are too many toasts on the screen
         if(butterup.options.currentToasts >= butterup.options.maxToasts){
             // there are too many toasts on the screen, delete the oldest one
@@ -51,7 +51,7 @@ var butterup = {
             document.getElementById('butterupRack').removeChild(oldestToast);
             butterup.options.currentToasts--;
         }
-  
+
         // Create the toast
         const toast = document.createElement('li');
         butterup.options.currentToasts++;
@@ -67,16 +67,16 @@ var butterup = {
         if(type != null){
             toast.className += ' ' + type;
         }
-  
+
         if(theme != null){
             toast.className += ' ' + theme;
         }
-  
-  
-  
+
+
+
         // Add the toast to the rack
         document.getElementById('butterupRack').appendChild(toast);
-  
+
         // check if the user wants an icon
         if(icon != null && icon == true){
             // add a div inside the toast with a class of icon
@@ -116,17 +116,17 @@ var butterup = {
                 }
             }
         }
-  
+
         // add a div inside the toast with a class of notif
         const toastNotif = document.createElement('div');
         toastNotif.className = 'notif';
         toast.appendChild(toastNotif);
-  
+
         // add a div inside of notif with a class of desc
         const toastDesc = document.createElement('div');
         toastDesc.className = 'desc';
         toastNotif.appendChild(toastDesc);
-  
+
         // check if the user added a title
         if(title != null){
             const toastTitle = document.createElement('div');
@@ -134,14 +134,14 @@ var butterup = {
             toastTitle.innerHTML = title;
             toastDesc.appendChild(toastTitle);
         }
-  
+
         if(customHTML != null){
               const toastHTML = document.createElement('div');
               toastHTML.className = 'message';
               toastHTML.innerHTML = customHTML;
               toastDesc.appendChild(toastHTML);
           }
-  
+
         // check if the user added a message
         if(message != null){
             const toastMessage = document.createElement('div');
@@ -149,13 +149,13 @@ var butterup = {
             toastMessage.innerHTML = message;
             toastDesc.appendChild(toastMessage);
         }
-  
+
         // Add buttons if specified
         if (primaryButton || secondaryButton) {
           const buttonContainer = document.createElement('div');
           buttonContainer.className = 'toast-buttons';
           toastNotif.appendChild(buttonContainer);
-  
+
           if (primaryButton) {
               const primaryBtn = document.createElement('button');
               primaryBtn.className = 'toast-button primary';
@@ -166,7 +166,7 @@ var butterup = {
               };
               buttonContainer.appendChild(primaryBtn);
           }
-  
+
           if (secondaryButton) {
               const secondaryBtn = document.createElement('button');
               secondaryBtn.className = 'toast-button secondary';
@@ -178,7 +178,7 @@ var butterup = {
               buttonContainer.appendChild(secondaryBtn);
           }
       }
-  
+
         // Check if the user has mapped any custom click functions
         if(onClick && typeof onClick === 'function') {
           toast.addEventListener('click', function(event){
@@ -187,12 +187,12 @@ var butterup = {
               onClick(event);
           });
           }
-  
+
           // Call onRender callback if provided
           if(onRender && typeof onRender === 'function') {
               onRender(toast);
           }
-  
+
         if(dismissable != null && dismissable == true){
             // Add a class to the toast to make it dismissable
             toast.className += ' dismissable';
@@ -201,13 +201,13 @@ var butterup = {
                 butterup.despawnToast(toast.id);
             });
         }
-  
+
         // remove the entrance animation class after the animation has finished
         setTimeout(function(){
             toast.className = toast.className.replace(' toastDown', '');
             toast.className = toast.className.replace(' toastUp', '');
         }, 500);
-  
+
         // despawn the toast after the specified time
         setTimeout(function(){
           if(onTimeout && typeof onTimeout === 'function') {
@@ -215,7 +215,7 @@ var butterup = {
           }
           butterup.despawnToast(toast.id);
         }, butterup.options.toastLife);
-  
+
     },
     despawnToast(toastId, onClosed){
         // fade out the toast and then remove it from the DOM
@@ -239,7 +239,7 @@ var butterup = {
                 // if this was the last toast on the screen, remove the toaster
                 if(butterup.options.currentToasts == 0){
                     var toaster = document.getElementById('toaster');
-                    toaster.parentNode.removeChild(toaster);
+                    //toaster.parentNode.removeChild(toaster);
                 }
             }, 500);
         }
