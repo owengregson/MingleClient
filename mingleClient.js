@@ -598,7 +598,8 @@ var butterup = {
 			link.rel = "icon";
 			document.head.appendChild(link);
 		}
-		link.href = modIconURL;
+		link.type = "";
+		link.href = modIconURL + "?v=" + MOD_VERSION.toString();
 		return gameJS;
 	}
 	createAnonFunction("retrieveFunctions", function (vars) {
