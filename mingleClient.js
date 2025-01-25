@@ -8,8 +8,8 @@
 // @match        *://shellshock.io/*
 // @grant        none
 // @run-at       document-start
-// @require      https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js
-// @require      https://cdn.jsdelivr.net/npm/babylonjs@7.15.0/babylon.min.js
+// @require      https://raw.githubusercontent.com/owengregson/MingleClient/refs/heads/main/assets/libs/crypto-js/4.2.0/crypto.js
+// @require      https://raw.githubusercontent.com/owengregson/MingleClient/refs/heads/main/assets/libs/babylon-js/7.15.0/babylon.js
 // ==/UserScript==
 
 /* eslint-disable no-useless-escape */
@@ -326,7 +326,7 @@ var butterup = {
 	const toastStylesURL =
 		"https://raw.githubusercontent.com/owengregson/MingleClient/refs/heads/main/toast/butterup.css";
 	const modIconURL =
-		"https://raw.githubusercontent.com/owengregson/MingleClient/refs/heads/main/assets/images/icon_circle.ico";
+		"https://raw.githubusercontent.com/owengregson/MingleClient/refs/heads/main/assets/images/favicon.ico";
 	let onlineClientKeys;
 	const functionNames = {};
 	const ESPArray = [];
