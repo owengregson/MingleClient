@@ -6,7 +6,7 @@
 // @icon         https://owengregson.github.io/MingleClient/assets/images/icon_circle.png
 // @license      MIT
 // @version      1.2
-// @description  Two-loop aimbot with predictive aiming & bloom correction. Toggles with P. Hold SHIFT (configurable) to aim. Includes ESP & Tracers.
+// @description  Two-loop aimbot with predictive aiming & bloom correction. Hold SHIFT (configurable) to aim. Press C to toggle rage (hardlocking) mode. Includes ESP (Digit 1) & Tracers (Digit 2).
 // @match        *://shellshock.io/*
 // @grant        none
 // @run-at       document-start
