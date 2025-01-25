@@ -244,4 +244,6 @@ var butterup = {
             }, 500);
         }
     }
-  };
+};
+
+window.butterup = butterup;
