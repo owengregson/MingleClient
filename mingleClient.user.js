@@ -1,6 +1,8 @@
 // ==UserScript==
 // @name         MingleClient
 // @namespace    https://github.com/owengregson/MingleClient
+// @homepage     https://github.com/owengregson/MingleClient
+// @updateURL    https://owengregson.github.io/MingleClient/mingleClient.user.js
 // @icon         https://owengregson.github.io/MingleClient/assets/images/icon_circle.png
 // @license      MIT
 // @version      1.2
