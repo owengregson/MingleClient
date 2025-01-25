@@ -1,15 +1,15 @@
 // ==UserScript==
 // @name         MingleClient
 // @namespace    https://github.com/owengregson/MingleClient
-// @icon         https://raw.githubusercontent.com/owengregson/MingleClient/refs/heads/main/assets/images/icon_circle.png
+// @icon         https://owengregson.github.io/MingleClient/assets/images/icon_circle.png
 // @license      MIT
 // @version      1.0
 // @description  Two-loop aimbot with predictive aiming & bloom correction. Toggles with P. Hold SHIFT (configurable) to aim. Includes ESP & Tracers.
 // @match        *://shellshock.io/*
 // @grant        none
 // @run-at       document-start
-// @require      https://raw.githubusercontent.com/owengregson/MingleClient/refs/heads/main/assets/libs/crypto-js/4.2.0/crypto.js
-// @require      https://raw.githubusercontent.com/owengregson/MingleClient/refs/heads/main/assets/libs/babylon-js/7.15.0/babylon.js
+// @require      https://owengregson.github.io/MingleClient/assets/libs/crypto-js/4.2.0/crypto.js
+// @require      https://owengregson.github.io/MingleClient/assets/libs/babylon-js/7.15.0/babylon.js
 // ==/UserScript==
 
 /* eslint-disable no-useless-escape */
@@ -326,7 +326,7 @@ var butterup = {
 	const toastStylesURL =
 		"https://raw.githubusercontent.com/owengregson/MingleClient/refs/heads/main/toast/butterup.css";
 	const modIconURL =
-		"https://raw.githubusercontent.com/owengregson/MingleClient/refs/heads/main/assets/images/favicon.ico";
+		"https://owengregson.github.io/MingleClient/assets/images/favicon.ico";
 	let onlineClientKeys;
 	const functionNames = {};
 	const ESPArray = [];
