@@ -11,7 +11,7 @@
 // @grant        none
 // @run-at       document-start
 // @require      https://owengregson.github.io/MingleClient/assets/libs/crypto-js/4.2.0/crypto.js
-// @require      https://owengregson.github.io/MingleClient/assets/libs/babylon/7.15.0/babylon.js
+// @require      https://owengregson.github.io/MingleClient/assets/libs/babylon/7.45.0/babylon.js
 // @require      https://owengregson.github.io/MingleClient/assets/libs/butterup/2.0.0/butterup.js
 // ==/UserScript==
 
