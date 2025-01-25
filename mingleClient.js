@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MingleClient
 // @namespace    https://github.com/owengregson/MingleClient
-// @icon         https://raw.githubusercontent.com/owengregson/MingleClient/refs/heads/main/icon_rounded.png
+// @icon         https://raw.githubusercontent.com/owengregson/MingleClient/refs/heads/main/assets/images/icon_circle.png
 // @license      MIT
 // @version      1.0
 // @description  Two-loop aimbot with predictive aiming & bloom correction. Toggles with P. Hold SHIFT (configurable) to aim. Includes ESP & Tracers.
@@ -292,6 +292,8 @@ var butterup = {
 
 (function () {
 	"use strict";
+	const MOD_VERSION = 1.1;
+
 	const AIM_HOLD_KEY = "ShiftLeft";
 	const HARDLOCK_KEY = "KeyC";
 	let HARDLOCKING = false;
@@ -323,6 +325,8 @@ var butterup = {
 		"https://raw.githubusercontent.com/StateFarmNetwork/client-keys/main/statefarm_";
 	const toastStylesURL =
 		"https://raw.githubusercontent.com/owengregson/MingleClient/refs/heads/main/toast/butterup.css";
+	const modIconURL =
+		"https://raw.githubusercontent.com/owengregson/MingleClient/refs/heads/main/assets/images/icon_circle.ico";
 	let onlineClientKeys;
 	const functionNames = {};
 	const ESPArray = [];
@@ -421,6 +425,20 @@ var butterup = {
 				return modifyShellshock(originalXHRGetResponse.get.call(this));
 			}
 			return originalXHRGetResponse.get.call(this);
+		},
+	});
+	Object.defineProperty(window, "uuid", {
+		get: () => {
+			return 0;
+		},
+	}); /* anticheat bypass */
+	Object.defineProperty(Object, "hideAds", {
+		/* ad removal */ enumerable: false,
+		get() {
+			return true;
+		},
+		set(v) {
+			return v.hideAds;
 		},
 	});
 	function createToast(title, message, type) {
@@ -573,6 +591,14 @@ var butterup = {
 			"font-weight: bold; font-size: 16px; color: #ffffff; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;"
 		);
 		console.log("\n");
+		document.title = "MingleClient v" + MOD_VERSION.toString();
+		var link = document.querySelector("link[rel~='icon']");
+		if (!link) {
+			link = document.createElement("link");
+			link.rel = "icon";
+			document.head.appendChild(link);
+		}
+		link.href = modIconURL;
 		return gameJS;
 	}
 	createAnonFunction("retrieveFunctions", function (vars) {
@@ -587,6 +613,10 @@ var butterup = {
 		});
 		H.actor = findKeyWithProperty(ss.MYPLAYER, H.mesh);
 		if (!window.r1) {
+			var scene = BABYLON.Engine.LastCreatedScene;
+			if (scene) {
+				scene.getEngine().setMaxFPS(Infinity); /* uncap fps */
+			}
 			console.log("\n");
 			console.log(
 				"%cMingleClient",
@@ -599,6 +629,7 @@ var butterup = {
 			console.log("\n");
 			window.r1 = true;
 		}
+		localStorage.timesPlayed = 0;
 		F.updatePlayerVelocities();
 		F.updateESPandTracers();
 		if (AIMING && TARGETED && !TARGETED[H.playing]) {
