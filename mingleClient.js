@@ -14,12 +14,292 @@
 
 /* eslint-disable no-useless-escape */
 
+var butterup = {
+	options: {
+		maxToasts: 5, // Max number of toasts that can be on the screen at once
+		toastLife: 2250, // How long a toast will stay on the screen before fading away
+		currentToasts: 0, // Current number of toasts on the screen
+	},
+	toast: function ({
+		title,
+		message,
+		type,
+		location,
+		icon,
+		theme,
+		customIcon,
+		dismissable,
+		onClick,
+		onRender,
+		onTimeout,
+		customHTML,
+		primaryButton,
+		secondaryButton,
+	}) {
+		/* Check if the toaster exists. If it doesn't, create it. If it does, check if there are too many toasts on the screen.
+        If there are too many, delete the oldest one and create a new one. If there aren't too many, create a new one. */
+		if (document.getElementById("toaster") == null) {
+			// toaster doesn't exist, create it
+			const toaster = document.createElement("div");
+			toaster.id = "toaster";
+			if (location == null) {
+				toaster.className = "toaster top-right";
+			} else {
+				toaster.className = "toaster " + location;
+			}
+
+			// Create the toasting rack inside of the toaster
+			document.getElementById("app").appendChild(toaster);
+
+			// Create the toasting rack inside of the toaster
+			if (document.getElementById("butterupRack") == null) {
+				const rack = document.createElement("ol");
+				rack.id = "butterupRack";
+				rack.className = "rack";
+				toaster.appendChild(rack);
+			}
+		} else {
+			const toaster = document.getElementById("toaster");
+			// check what location the toaster is in
+			toaster.classList.forEach(function (item) {
+				// remove any location classes from the toaster
+				if (
+					item.includes("top-right") ||
+					item.includes("top-center") ||
+					item.includes("top-left") ||
+					item.includes("bottom-right") ||
+					item.includes("bottom-center") ||
+					item.includes("bottom-left")
+				) {
+					toaster.classList.remove(item);
+				}
+			});
+			if (location == null) {
+				toaster.className = "toaster top-right";
+			} else {
+				toaster.className = "toaster " + location;
+			}
+			const rack = document.getElementById("butterupRack");
+		}
+
+		// Check if there are too many toasts on the screen
+		if (butterup.options.currentToasts >= butterup.options.maxToasts) {
+			// there are too many toasts on the screen, delete the oldest one
+			var oldestToast =
+				document.getElementById("butterupRack").firstChild;
+			document.getElementById("butterupRack").removeChild(oldestToast);
+			butterup.options.currentToasts--;
+		}
+
+		// Create the toast
+		const toast = document.createElement("li");
+		butterup.options.currentToasts++;
+		toast.className = "butteruptoast";
+		// if the toast class contains a top or bottom location, add the appropriate class to the toast
+		if (
+			toaster.className.includes("top-right") ||
+			toaster.className.includes("top-center") ||
+			toaster.className.includes("top-left")
+		) {
+			toast.className += " toastDown";
+		}
+		if (
+			toaster.className.includes("bottom-right") ||
+			toaster.className.includes("bottom-center") ||
+			toaster.className.includes("bottom-left")
+		) {
+			toast.className += " toastUp";
+		}
+		toast.id = "butterupToast-" + butterup.options.currentToasts;
+		if (type != null) {
+			toast.className += " " + type;
+		}
+
+		if (theme != null) {
+			toast.className += " " + theme;
+		}
+
+		// Add the toast to the rack
+		document.getElementById("butterupRack").appendChild(toast);
+
+		// check if the user wants an icon
+		if (icon != null && icon == true) {
+			// add a div inside the toast with a class of icon
+			const toastIcon = document.createElement("div");
+			toastIcon.className = "icon";
+			toast.appendChild(toastIcon);
+			// check if the user has added a custom icon
+			if (customIcon) {
+				toastIcon.innerHTML = customIcon;
+			}
+			if (type != null && customIcon == null) {
+				// add the type class to the toast
+				toast.className += " " + type;
+				if (type == "success") {
+					toastIcon.innerHTML =
+						'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">' +
+						'<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" />' +
+						"</svg>";
+				}
+				if (type == "error") {
+					toastIcon.innerHTML =
+						'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">' +
+						'<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd" />' +
+						"</svg>";
+				}
+				if (type == "warning") {
+					toastIcon.innerHTML =
+						'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">' +
+						'<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zm0 10a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />' +
+						"</svg>";
+				}
+				if (type == "info") {
+					toastIcon.innerHTML =
+						'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">' +
+						'<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z" clip-rule="evenodd" />' +
+						"</svg>";
+				}
+			}
+		}
+
+		// add a div inside the toast with a class of notif
+		const toastNotif = document.createElement("div");
+		toastNotif.className = "notif";
+		toast.appendChild(toastNotif);
+
+		// add a div inside of notif with a class of desc
+		const toastDesc = document.createElement("div");
+		toastDesc.className = "desc";
+		toastNotif.appendChild(toastDesc);
+
+		// check if the user added a title
+		if (title != null) {
+			const toastTitle = document.createElement("div");
+			toastTitle.className = "title";
+			toastTitle.innerHTML = title;
+			toastDesc.appendChild(toastTitle);
+		}
+
+		if (customHTML != null) {
+			const toastHTML = document.createElement("div");
+			toastHTML.className = "message";
+			toastHTML.innerHTML = customHTML;
+			toastDesc.appendChild(toastHTML);
+		}
+
+		// check if the user added a message
+		if (message != null) {
+			const toastMessage = document.createElement("div");
+			toastMessage.className = "message";
+			toastMessage.innerHTML = message;
+			toastDesc.appendChild(toastMessage);
+		}
+
+		// Add buttons if specified
+		if (primaryButton || secondaryButton) {
+			const buttonContainer = document.createElement("div");
+			buttonContainer.className = "toast-buttons";
+			toastNotif.appendChild(buttonContainer);
+
+			if (primaryButton) {
+				const primaryBtn = document.createElement("button");
+				primaryBtn.className = "toast-button primary";
+				primaryBtn.textContent = primaryButton.text;
+				primaryBtn.onclick = function (event) {
+					event.stopPropagation();
+					primaryButton.onClick(event);
+				};
+				buttonContainer.appendChild(primaryBtn);
+			}
+
+			if (secondaryButton) {
+				const secondaryBtn = document.createElement("button");
+				secondaryBtn.className = "toast-button secondary";
+				secondaryBtn.textContent = secondaryButton.text;
+				secondaryBtn.onclick = function (event) {
+					event.stopPropagation();
+					secondaryButton.onClick(event);
+				};
+				buttonContainer.appendChild(secondaryBtn);
+			}
+		}
+
+		// Check if the user has mapped any custom click functions
+		if (onClick && typeof onClick === "function") {
+			toast.addEventListener("click", function (event) {
+				// Prevent the click event from triggering dismissal if the toast is dismissable
+				event.stopPropagation();
+				onClick(event);
+			});
+		}
+
+		// Call onRender callback if provided
+		if (onRender && typeof onRender === "function") {
+			onRender(toast);
+		}
+
+		if (dismissable != null && dismissable == true) {
+			// Add a class to the toast to make it dismissable
+			toast.className += " dismissable";
+			// when the item is clicked on, remove it from the DOM
+			toast.addEventListener("click", function () {
+				butterup.despawnToast(toast.id);
+			});
+		}
+
+		// remove the entrance animation class after the animation has finished
+		setTimeout(function () {
+			toast.className = toast.className.replace(" toastDown", "");
+			toast.className = toast.className.replace(" toastUp", "");
+		}, 500);
+
+		// despawn the toast after the specified time
+		setTimeout(function () {
+			if (onTimeout && typeof onTimeout === "function") {
+				onTimeout(toast);
+			}
+			butterup.despawnToast(toast.id);
+		}, butterup.options.toastLife);
+	},
+	despawnToast(toastId, onClosed) {
+		// fade out the toast and then remove it from the DOM
+		var toast = document.getElementById(toastId);
+		// does the toast exist?
+		if (toast != null) {
+			toast.className += " fadeOutToast";
+			setTimeout(function () {
+				// set the opacity to 0
+				try {
+					toast.style.opacity = "0";
+					toast.parentNode.removeChild(toast);
+					butterup.options.currentToasts--;
+					// Call onClosed callback if provided
+					if (onClosed && typeof onClosed === "function") {
+						onClosed(toast);
+					}
+				} catch (e) {
+					// do nothing
+				}
+				// if this was the last toast on the screen, remove the toaster
+				if (butterup.options.currentToasts == 0) {
+					var toaster = document.getElementById("toaster");
+					//toaster.parentNode.removeChild(toaster);
+				}
+			}, 500);
+		}
+	},
+};
+
 (function () {
 	"use strict";
 	const AIM_HOLD_KEY = "ShiftLeft";
-	const SMOOTH_FACTOR = 0.45;
-	const ENABLE_ESP = true;
-	const ENABLE_TRACERS = true;
+	const HARDLOCK_KEY = "KeyC";
+	let HARDLOCKING = false;
+	const ESP_KEY = /* digit 1 */ "Digit1";
+	const TRACER_KEY = /* digit 2 */ "Digit2";
+	const SMOOTH_FACTOR = 0.3;
+	let ENABLE_ESP = true;
+	let ENABLE_TRACERS = true;
 	let predictiveOn = true;
 	const ANGLE_WEIGHT = 2.0;
 	const DISTANCE_WEIGHT = 1.4;
@@ -41,15 +321,63 @@
 	/* Credit to @StateFarmNetwork / StateFarmClient & LibertyMutualClient */
 	const clientKeysURL =
 		"https://raw.githubusercontent.com/StateFarmNetwork/client-keys/main/statefarm_";
+	const toastStylesURL =
+		"https://raw.githubusercontent.com/owengregson/MingleClient/refs/heads/main/toast/butterup.css";
 	let onlineClientKeys;
 	const functionNames = {};
 	const ESPArray = [];
+	let tNotif = ["success", "Enabled"];
+	const cssString = `.toaster,ol.rack{list-style:none;margin:0}.toaster{font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,Noto Sans,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;box-sizing:border-box;padding:5px;outline:0;z-index:999999999;position:fixed}.butteruptoast,.butteruptoast.brutalist{font-size:13px;display:flex;padding:16px;width:325px}.toaster.bottom-right{bottom:20px;right:20px}.toaster.bottom-left{bottom:20px;left:20px}.toaster.top-right{top:20px;right:20px}.toaster.top-left{top:20px;left:20px}.toaster.bottom-center{bottom:20px;left:50%;transform:translateX(-50%)}.toaster.top-center{top:20px;left:50%;transform:translateX(-50%)}.toaster.top-center ol.rack,.toaster.top-left ol.rack,.toaster.top-right ol.rack{flex-direction:column-reverse}.toaster.bottom-center ol.rack,.toaster.bottom-left ol.rack,.toaster.bottom-right ol.rack{flex-direction:column}ol.rack{padding:0;display:flex}ol.rack li{margin-bottom:16px}ol.rack.upperstack li{margin-bottom:-35px;transition:.3s ease-in-out}ol.rack.upperstack li:hover{margin-bottom:16px;scale:1.03;transition:.3s ease-in-out}ol.rack.lowerstack li{margin-top:-35px}ol.rack.lowerstack{margin-bottom:0}.butteruptoast{border-radius:8px;box-shadow:0 4px 12px #0000001a;border:1px solid #ededed;background-color:#fff;gap:6px;color:#282828}.butteruptoast.dismissable{cursor:pointer}.butteruptoast .icon{display:flex;align-items:start;flex-direction:column}.butteruptoast .icon svg{width:20px;height:20px;fill:#282828}.notif .desc{display:flex;flex-direction:column;gap:2px}.notif .desc .title{font-weight:600;line-height:1.5}.notif .desc .message{font-weight:400;line-height:1.4}.butteruptoast.success{background-color:#ebfef2;color:#00892d;border:1px solid #d2fde4}.butteruptoast.success .icon svg{fill:hsl(140,100%,27%)}.butteruptoast.error .icon svg{fill:hsl(0,100%,27%)}.butteruptoast.warning .icon svg{fill:hsl(50,100%,27%)}.butteruptoast.info .icon svg{fill:hsl(210,100%,27%)}.butteruptoast.error{background-color:#fef0f0;color:#890000;border:1px solid #fdd2d2}.butteruptoast.warning{background-color:#fffdf0;color:#897200;border:1px solid #fdf6d2}.butteruptoast.info{background-color:#f0f8ff;color:#004489;border:1px solid #d2e8fd}.toast-buttons{display:flex;gap:8px;width:100%;align-items:center;flex-direction:row;margin-top:16px}.toast-buttons .toast-button.primary{background-color:#282828;color:#fff;padding:8px 16px;border-radius:4px;cursor:pointer;border:none;width:100%}.toast-buttons .toast-button.secondary{background-color:#f0f8ff;color:#004489;border:1px solid #d2e8fd;padding:8px 16px;border-radius:4px;cursor:pointer;width:100%}.butteruptoast.success .toast-button.primary{background-color:#27ae5f;color:#fff}.butteruptoast.success .toast-button.secondary{background-color:#daf0e3;color:#1e8549;border:1px solid #8ae4b0}.butteruptoast.error .toast-button.primary{background-color:#db3748;color:#fff}.butteruptoast.error .toast-button.secondary{background-color:#eddddf;color:#be2131;border:1px solid #eb8e97}.butteruptoast.warning .toast-button.primary{background-color:#ffc005;color:#4c3900}.butteruptoast.warning .toast-button.secondary{background-color:#fff9ea;color:#9e7600;border:1px solid #ffe084}.butteruptoast.info .toast-button.primary{background-color:#2094f3;color:#fff}.butteruptoast.info .toast-button.secondary{background-color:#e1f1fd;color:#085ea4;border:1px solid #81c2f8}.toastUp{animation:.5s ease-in-out forwards slideUp}.toastDown{animation:.5s ease-in-out forwards slideDown}@keyframes slideDown{0%{opacity:0;transform:translateY(-100%)}100%{opacity:1;transform:translateY(0)}}@keyframes slideUp{0%{opacity:0;transform:translateY(100%)}100%{opacity:1;transform:translateY(0)}}.fadeOutToast{animation:.3s ease-in-out forwards fadeOut}@keyframes fadeOut{0%{opacity:1}100%{opacity:0}}.butteruptoast.glass{background-color:rgba(255,255,255,.42)!important;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:none;box-shadow:0 4px 12px #0000001a;color:#282828}.butteruptoast.glass.success{background-color:rgba(235,254,242,.42)!important;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:none;box-shadow:0 4px 12px #0000001a;color:#00892d}.butteruptoast.glass.error,.butteruptoast.glass.warning{backdrop-filter:blur(10px);border:none;box-shadow:0 4px 12px #0000001a}.butteruptoast.glass.error{background-color:rgba(254,240,240,.42)!important;-webkit-backdrop-filter:blur(10px);color:#890000}.butteruptoast.glass.warning{background-color:rgba(255,253,240,.42)!important;-webkit-backdrop-filter:blur(10px);color:#897200}.butteruptoast.glass.info{background-color:rgba(240,248,255,.42)!important;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:none;box-shadow:0 4px 12px #0000001a;color:#004489}.butteruptoast.brutalist{border-radius:0;box-shadow:0 4px 12px #0000001a;border:2px solid #282828;align-items:center;background-color:#fff;gap:6px;color:#282828}.butteruptoast.brutalist.success{background-color:#ebfef2;color:#00892d;border:2px solid #00892d}.butteruptoast.brutalist.error{background-color:#fef0f0;color:#890000;border:2px solid #890000}.butteruptoast.brutalist.warning{background-color:#fffdf0;color:#897200;border:2px solid #897200}.butteruptoast.brutalist.info{background-color:#f0f8ff;color:#004489;border:2px solid #004489}`;
+	const style = document.createElement("style");
+	style.type = "text/css";
+	style.appendChild(document.createTextNode(cssString));
+	const head = document.head || document.getElementsByTagName("head")[0];
+	head.appendChild(style);
 	document.addEventListener(
 		"keydown",
 		(evt) => {
 			if (evt.code === AIM_HOLD_KEY && !AIMING) {
 				AIMING = true;
 				TARGETED = F.pickBestTargetByAngle();
+			} else if (evt.code === HARDLOCK_KEY) {
+				HARDLOCKING = !HARDLOCKING;
+				console.log("HARDLOCKING: " + HARDLOCKING);
+				if (HARDLOCKING) {
+					tNotif = ["success", "Enabled"];
+				} else {
+					tNotif = ["error", "Disabled"];
+				}
+				createToast(
+					"Hardlocking " + tNotif[1],
+					"The selected module has been " + tNotif[1].toLowerCase(),
+					tNotif[0]
+				);
+			} else if (evt.code === ESP_KEY) {
+				ENABLE_ESP = !ENABLE_ESP;
+				console.log("ESP: " + ENABLE_ESP);
+				if (ENABLE_ESP) {
+					tNotif = ["success", "Enabled"];
+				} else {
+					tNotif = ["error", "Disabled"];
+				}
+				createToast(
+					"ESP " + tNotif[1],
+					"The selected module has been " + tNotif[1].toLowerCase(),
+					tNotif[0]
+				);
+			} else if (evt.code === TRACER_KEY) {
+				ENABLE_TRACERS = !ENABLE_TRACERS;
+				console.log("TRACERS:" + ENABLE_TRACERS);
+				if (ENABLE_TRACERS) {
+					tNotif = ["success", "Enabled"];
+				} else {
+					tNotif = ["error", "Disabled"];
+				}
+				createToast(
+					"Tracers " + tNotif[1],
+					"The selected module has been " + tNotif[1].toLowerCase(),
+					tNotif[0]
+				);
 			}
 		},
 		true
@@ -95,6 +423,26 @@
 			return originalXHRGetResponse.get.call(this);
 		},
 	});
+	function createToast(title, message, type) {
+		/* types: success, warning, error, info */
+		if (type == "" || type == "classic") {
+			butterup.toast({
+				title: title,
+				message: "",
+				location: "top-right",
+				dismissable: false,
+			});
+		} else {
+			butterup.toast({
+				title: title,
+				message: "",
+				location: "top-right",
+				dismissable: false,
+				icon: true,
+				type: type,
+			});
+		}
+	}
 	function getScrambled() {
 		return Array.from({ length: 10 }, () =>
 			String.fromCharCode(97 + Math.floor(Math.random() * 26))
@@ -133,6 +481,7 @@
 		functionNames[name] = funcName;
 	}
 	function modifyShellshock(gameJS) {
+		window.butterup = butterup;
 		let originalJS = gameJS;
 		if (crackedShell) {
 			const altJS = fetchTextContent("/js/shellshock.og.js");
@@ -183,6 +532,7 @@
 				);
 			}
 		}
+
 		window.ss = H;
 		const f = function (varName) {
 			return varName.replace("$", "\\$");
@@ -212,10 +562,7 @@
 				functionNames.modifyControls
 			}(${f(H.CONTROLKEYS)});`
 		);*/
-		modifyJS(
-			"iFrame removed",
-			"MingleClient injected successfully!"
-		);
+		modifyJS("iFrame removed", "MingleClient injected successfully!");
 		console.log("\n");
 		console.log(
 			"%cMingleClient",
@@ -256,6 +603,11 @@
 		F.updateESPandTracers();
 		if (AIMING && TARGETED && !TARGETED[H.playing]) {
 			TARGETED = null;
+			createToast(
+				"Target Eliminated",
+				"Your aimbot target is no longer alive.",
+				"warning"
+			);
 		}
 		if (
 			AIMING &&
@@ -518,11 +870,15 @@
 	createAnonFunction("smoothAim", function () {
 		const currYaw = ss.MYPLAYER[H.yaw];
 		const currPitch = ss.MYPLAYER[H.pitch];
-		ss.MYPLAYER[H.yaw] = F.smoothAngle(currYaw, desiredYaw, SMOOTH_FACTOR);
+		ss.MYPLAYER[H.yaw] = F.smoothAngle(
+			currYaw,
+			desiredYaw,
+			HARDLOCKING ? 0.99 : SMOOTH_FACTOR
+		);
 		ss.MYPLAYER[H.pitch] = F.smoothAngle(
 			currPitch,
 			desiredPitch,
-			SMOOTH_FACTOR
+			HARDLOCKING ? 0.99 : SMOOTH_FACTOR
 		);
 	});
 	createAnonFunction("getAimLocation", function (player) {
