@@ -5,7 +5,7 @@
 // @updateURL    https://owengregson.github.io/MingleClient/mingleClient.user.js
 // @icon         https://owengregson.github.io/MingleClient/assets/images/icon_circle.png
 // @license      MIT
-// @version      1.2
+// @version      1.3
 // @description  Two-loop aimbot with predictive aiming & bloom correction. Hold SHIFT (configurable) to aim. Press C to toggle rage (hardlocking) mode. Includes ESP (Digit 1) & Tracers (Digit 2).
 // @match        *://shellshock.io/*
 // @grant        none
@@ -19,7 +19,7 @@
 
 (function () {
 	"use strict";
-	const MOD_VERSION = 1.2;
+	const MOD_VERSION = 1.3;
 
 	const AIM_HOLD_KEY = "ShiftLeft";
 	const HARDLOCK_KEY = "KeyC";
@@ -783,6 +783,12 @@
 					if (player === TARGETED) {
 						box.color = new BABYLON.Color3(1, 0, 0);
 						tracers.color = new BABYLON.Color3(1, 0, 0);
+					} else if (F.getLineOfSight(player, false)) {
+						player.box.color = new BABYLON.Color3(1, 0, 1);
+						player.tracers.color = new BABYLON.Color3(1, 0, 1);
+					} else if (F.getLineOfSight(player, true)) {
+						player.box.color = new BABYLON.Color3(1, 1, 0);
+						player.tracers.color = new BABYLON.Color3(1, 1, 0);
 					} else {
 						box.color = new BABYLON.Color3(1, 1, 1);
 						tracers.color = new BABYLON.Color3(1, 1, 1);
