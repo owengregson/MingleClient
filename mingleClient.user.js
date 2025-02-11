@@ -5,7 +5,7 @@
 // @updateURL    https://owengregson.github.io/MingleClient/mingleClient.user.js
 // @icon         https://owengregson.github.io/MingleClient/assets/images/icon_circle.png
 // @license      MIT
-// @version      1.3
+// @version      1.4
 // @description  Two-loop aimbot with predictive aiming & bloom correction. Hold SHIFT (configurable) to aim. Press C to toggle rage (hardlocking) mode. Includes ESP (Digit 1) & Tracers (Digit 2).
 // @match        *://shellshock.io/*
 // @grant        none
@@ -16,10 +16,9 @@
 // ==/UserScript==
 
 /* eslint-disable no-useless-escape */
-
 (function () {
 	"use strict";
-	const MOD_VERSION = 1.3;
+	const MOD_VERSION = 1.4;
 
 	const AIM_HOLD_KEY = "ShiftLeft";
 	const HARDLOCK_KEY = "KeyC";
@@ -271,7 +270,7 @@
 				injectionString = `${injectionString}${name}:  (() => { let variable = "value_undefined"; try { eval("variable = ${deobf};"); } catch (error) { return "value_undefined"; }; return variable; })(),`;
 			} else {
 				alert(
-					"WARNING! The keys inputted contain non-variable characters! There is a possibility that this could run code unintended by the StateFarm team, although possibly there is also a mistake. Do NOT proceed with using this, and report to the StateFarm developers what is printed in the console."
+					"The received keys were invalid. Report this error to the developers."
 				);
 			}
 		}
@@ -713,7 +712,7 @@
 				ss.MYPLAYER.team === 0 || player.team !== ss.MYPLAYER.team;
 			if (player !== ss.MYPLAYER && isEnemy) {
 				if (!player.generatedESP) {
-					const boxSize = { width: 0.4, height: 0.65, depth: 0.4 };
+					const boxSize = { width: 0.35, height: 0.65, depth: 0.35 };
 					const v = [
 						new BABYLON.Vector3(
 							-boxSize.width / 2,
@@ -781,14 +780,14 @@
 					);
 					tracers.renderingGroupId = 1;
 					if (player === TARGETED) {
-						box.color = new BABYLON.Color3(1, 0, 0);
-						tracers.color = new BABYLON.Color3(1, 0, 0);
+						box.color = new BABYLON.Color3(227/255, 18/255, 18/255);
+						tracers.color = new BABYLON.Color3(227/255, 18/255, 18/255);
 					} else if (F.getLineOfSight(player, false)) {
-						player.box.color = new BABYLON.Color3(1, 0, 1);
-						player.tracers.color = new BABYLON.Color3(1, 0, 1);
-					} else if (F.getLineOfSight(player, true)) {
-						player.box.color = new BABYLON.Color3(1, 1, 0);
-						player.tracers.color = new BABYLON.Color3(1, 1, 0);
+						box.color = new BABYLON.Color3(227/255, 220/25, 7/255);
+						tracers.color = new BABYLON.Color3(227/255, 220/25, 7/255);
+					} else if (F.getLineOfSight(player, true, 5)) {
+						box.color = new BABYLON.Color3(18/255, 227/255, 22/255);
+						tracers.color = new BABYLON.Color3(18/255, 227/255, 22/255);
 					} else {
 						box.color = new BABYLON.Color3(1, 1, 1);
 						tracers.color = new BABYLON.Color3(1, 1, 1);
@@ -836,8 +835,14 @@
 				if (player.crosshair) {
 					player.crosshair.isVisible = player === TARGETED;
 					if (player === TARGETED) {
-						player.box.color = new BABYLON.Color3(1, 0, 0);
-						player.tracers.color = new BABYLON.Color3(1, 0, 0);
+						player.box.color = new BABYLON.Color3(227/255, 18/255, 18/255);
+						player.tracers.color = new BABYLON.Color3(227/255, 18/255, 18/255);
+					} else if (F.getLineOfSight(player, false)) {
+						player.box.color = new BABYLON.Color3(227/255, 220/255, 7/255);
+						player.tracers.color = new BABYLON.Color3(227/255, 220/255, 7/255);
+					} else if (F.getLineOfSight(player, true, 5)) {
+						player.box.color = new BABYLON.Color3(18/255, 227/255, 22/255);
+						player.tracers.color = new BABYLON.Color3(18/255, 227/255, 22/255);
 					} else {
 						player.box.color = new BABYLON.Color3(1, 1, 1);
 						player.tracers.color = new BABYLON.Color3(1, 1, 1);
@@ -854,7 +859,7 @@
 			}
 		}
 	});
-	createAnonFunction("getLineOfSight", function (target, usePrediction) {
+	createAnonFunction("getLineOfSight", function (target, usePrediction, factor=1) {
 		if (
 			target &&
 			target[H.actor] &&
@@ -865,7 +870,7 @@
 			return;
 		let myPlayerPosition = ss.MYPLAYER[H.actor][H.mesh].position;
 		let targetPosition = usePrediction
-			? F.predictPosition(target)
+			? F.predictPosition(target, factor)
 			: target[H.actor][H.mesh].position;
 		let directionVector = F.getDirectionVectorFacingTarget(
 			targetPosition,
@@ -1022,11 +1027,11 @@
 			pitchReal: dir.pitchReal + bloomValues[1] * multiplier,
 		};
 	});
-	createAnonFunction("predictPosition", function (player) {
+	createAnonFunction("predictPosition", function (player, factor=1) {
 		let velocityVector = new BABYLON.Vector3(0, 0, 0);
-		velocityVector.x = player.dx;
-		velocityVector.y = player.dy;
-		velocityVector.z = player.dz;
+		velocityVector.x = player.dx * factor;
+		velocityVector.y = player.dy * factor;
+		velocityVector.z = player.dz * factor;
 		const bulletSpeed = ss.MYPLAYER.weapon.constructor.velocity;
 		const timeDiff = F.distancePlayers(player, 1) / bulletSpeed + 1;
 		let newPos = new BABYLON.Vector3(
