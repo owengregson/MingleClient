@@ -1,11 +1,8 @@
-# MingleClient
-ShellShockers hack client with two-loop aimbot, predictive aiming, & bloom correction. Hold SHIFT (configurable) to aim. Press C to toggle rage (hardlocking) mode. Includes ESP (Digit 1) & Tracers (Digit 2).
-
-Colorized Tracers
-![Screenshot of colorized tracers](./s1.png)
-
-Aimbot predicting position & toggle notification
-![Screenshot of aimbot predicting position and toggle notification](./s3.png)
-
-ADS with Lock-on
-![Screenshot of aiming with lock on](./s2.png)
+<h1 id="mingleclient">MingleClient</h1>
+<p>ShellShockers hack client with two-loop aimbot, predictive aiming, &amp; bloom correction. Hold SHIFT (configurable) to aim. Press C to toggle rage (hardlocking) mode. Includes ESP (Digit 1) &amp; Tracers (Digit 2).</p>
+<p>Colorized Tracers
+<img src="./s1.png" alt="Screenshot of colorized tracers"></p>
+<p>Aimbot predicting position &amp; toggle notification
+<img src="./s3.png" alt="Screenshot of aimbot predicting position and toggle notification"></p>
+<p>ADS with Lock-on
+<img src="./s2.png" alt="Screenshot of aiming with lock on"></p>
